@@ -1,19 +1,6 @@
 (function ($, _, routie, Handlebars) {
     'use strict';
 
-    function formatDecimal(amount, decimals, decimalSeparator, thousandSeparator) {
-        var
-            c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals,
-            d = decimalSeparator === undefined ? "," : decimalSeparator,
-            t = thousandSeparator === undefined ? " " : thousandSeparator,
-            s = amount < 0 ? "-" : "",
-            i = parseInt(amount = Math.abs(+amount || 0).toFixed(c)) + "",
-            j = (j = i.length) > 3 ? j % 3 : 0;
-
-        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
-            (c ? d + Math.abs(amount - i).toFixed(c).slice(2) : "");
-    }
-
     window.fw_ = function () {
         var storage = {},
             application = this;
@@ -80,32 +67,6 @@
 
             Handlebars.registerHelper('route', function (url) {
                 return new Handlebars.SafeString('#' + routie.lookup(url));
-            });
-
-            Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
-
-                switch (operator) {
-                    case '===':
-                        return (v1 === v2) ? options.fn(this) : options.inverse(this);
-                    case '<':
-                        return (v1 < v2) ? options.fn(this) : options.inverse(this);
-                    case '<=':
-                        return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-                    case '>':
-                        return (v1 > v2) ? options.fn(this) : options.inverse(this);
-                    case '>=':
-                        return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-                    case '&&':
-                        return (v1 && v2) ? options.fn(this) : options.inverse(this);
-                    case '||':
-                        return (v1 || v2) ? options.fn(this) : options.inverse(this);
-                    default:
-                        return options.inverse(this);
-                }
-            });
-
-            Handlebars.registerHelper('decimal', function(number, decimals, decimalSeparator, thousandSeparator){
-                return formatDecimal(number, decimals, decimalSeparator, thousandSeparator);
             });
 
             routes = _.chain(storage['route'])
